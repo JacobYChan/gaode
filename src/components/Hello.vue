@@ -23,6 +23,7 @@ export default {
             zoom: 15,
             newPosition: [],
             index: 0,
+            dataNum:0
         };
     },
     created() {
@@ -31,25 +32,28 @@ export default {
             this.newPosition = [result[this.index].longitude, result[this.index].latitude];
             this.markers[0].position = this.newPosition;
             this.center = this.newPosition;
-        })
+            this.dataNum = result.length;
+        });
         const speed = 0.000001;
-        setInterval(() => {
+        let time = setInterval(() => {
             this.index++;
+            
             this.getData(this.index);
-            let t = setInterval(() => {
-                this.markers[0].position[0] = this.markers[0].position[0] + speed;
-                if (this.markers[0].position[0] >= this.newPosition[0]) {
-                    clearInterval(t);
-                }
-            }, 20)
-            let t2 = setInterval(() => {
-                this.markers[0].position[1] = this.markers[0].position[1] + speed;
-                if (this.markers[0].position[1] >= this.newPosition[1]) {
-                    clearInterval(t2);
-                }
-            }, 20)
-
-
+            // console.log(this.index);
+            // let t = setInterval(() => {
+                // console.log(this.markers[0].position[0])
+                // this.markers[0].position = [this.markers[0].position[0] + speed,this.markers[0].position[1] + speed];
+                // if (this.markers[0].position[0] >= this.newPosition[0]) {
+                //     clearInterval(t);
+                // }
+                // console.log(this.markers[0].position);
+            // }, 20)
+            
+            this.angle = this.calAngle(this.markers[0].position,this.newPosition);
+            this.markers[0].position = this.newPosition;
+            if(this.index>=this.dataNum){
+                clearInterval(time);
+            }
         }, 2000);
     },
     mounted() {
@@ -74,7 +78,9 @@ export default {
         getData(index) {
             this.$http.get('http://localhost:8080/static/data.json').then(res => {
                 let result = res.data;
+                
                 this.newPosition = [result[index].longitude, result[index].latitude];
+                // console.log(result[index].longitude);
             })
         }
     }
