@@ -24,7 +24,7 @@ export default {
             index: 0,
             dataNum: 0,
 
-            map:{}
+            map: {}
         }
     },
     methods: {
@@ -39,8 +39,6 @@ export default {
             this.$http.get('static/data.json').then(res => {
                 let result = res.data;
                 this.newPosition = [result[this.index].longitude, result[this.index].latitude];
-                // console.log(this.newPosition)
-                // this.marker.position = this.newPosition;
                 this.center = this.newPosition;
                 this.dataNum = result.length;
 
@@ -66,7 +64,6 @@ export default {
                     offset: new AMap.Pixel(-12, -12),
                     map: this.map,
                     angle: this.angle,
-                    // autoRotation: true
                 });
 
             })
@@ -80,7 +77,6 @@ export default {
                 oldPosition.push(this.marker.getPosition().lat);
 
                 this.angle = this.calAngle(oldPosition, this.newPosition);
-                // console.log(this.angle + '-------------');
                 this.marker.setAngle(this.angle);
 
                 let data = [
@@ -111,26 +107,39 @@ export default {
                 let result = res.data;
 
                 this.newPosition = [result[index].longitude, result[index].latitude];
-               
+
             })
+        }
+    },
+    watch:{
+        AMap:function(){
+            // alert(1);
+            
         }
     },
     created() {
         // 已载入高德地图API，则直接初始化地图
-        if (window.AMap && window.AMapUI) {
-            this.initMap()
-            // 未载入高德地图API，则先载入API再初始化
-        } else {
-            // 载入高德地图和UI组件
-            Promise.all([
-                remoteLoad(`http://webapi.amap.com/maps?v=1.3&key=${MapKey}`),
-                remoteLoad('http://webapi.amap.com/ui/1.0/main.js')
-            ]).then(() => {
-                this.initMap()
-            })
-        }
+        Promise.all([
+            remoteLoad(`http://webapi.amap.com/maps?v=1.3&key=${MapKey}`),
+            remoteLoad('http://webapi.amap.com/ui/1.0/main.js')
+        ])
+    
+        // if (window.AMap && window.AMapUI) {
+        //     alert(1)
+        //     this.initMap()
+        //     // 未载入高德地图API，则先载入API再初始化
+        // } else {
+        //     alert(2)
+        //     // 载入高德地图和UI组件
 
-
+        // }
+    },
+    mounted(){
+        this.$nextTick(()=>{
+            setTimeout(()=>{
+                this.initMap();
+            },1000)
+        })
     }
 }
 </script>
