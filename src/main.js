@@ -6,17 +6,23 @@ import router from './router'
 import AMap from 'vue-amap';
 import axios from 'axios'
 
+Vue.directive('hljs', el => {
+    let blocks = el.querySelectorAll('pre')
+    Array.prototype.forEach.call(blocks, hljs.highlightBlock)
+  })
+  
+
 // import { lazyAMapApiLoaderInstance } from 'vue-amap';
 Vue.prototype.$http = axios
 
 Vue.config.productionTip = false
 
-Vue.use(AMap);
+// Vue.use(AMap);
 
-AMap.initAMapApiLoader({
-    key: 'b5b1e14a2999124175dd11b972d78d84',
-    plugin: ['AMap.Autocomplete', 'AMap.PlaceSearch', 'AMap.Scale', 'AMap.OverView', 'AMap.ToolBar', 'AMap.MapType', 'AMap.PolyEditor', 'AMap.CircleEditor']
-});
+// AMap.initAMapApiLoader({
+//     key: 'b5b1e14a2999124175dd11b972d78d84',
+//     plugin: ['AMap.Autocomplete', 'AMap.PlaceSearch', 'AMap.Scale', 'AMap.OverView', 'AMap.ToolBar', 'AMap.MapType', 'AMap.PolyEditor', 'AMap.CircleEditor']
+// });
 
 // lazyAMapApiLoaderInstance.load().then(() => {
 //     // your code ...

@@ -37,6 +37,7 @@ export default {
                     })
                 },
                 'moveend': () => {
+                    // console.log(11111)
                 },
                 'zoomchange': () => {
                 },

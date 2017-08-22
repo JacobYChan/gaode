@@ -1,7 +1,7 @@
 <template>
     <div class="amap-page-container">
-        <el-amap vid="amapDemo" :center="center" :zoom="zoom">
-            <el-amap-marker v-for="(marker,index) in markers" :key="index" :angle="angle" :icon="icon" :position="marker.position" :events="marker.events" :visible="marker.visible" :draggable="marker.draggable"></el-amap-marker>
+        <el-amap ref="map" vid="amapDemo" :center="center" :zoom="zoom">
+            <el-amap-marker v-for="(marker,index) in markers" autoRotation="true" :key="index" :angle="angle" :icon="icon" :position="marker.position" :events="marker.events" :visible="marker.visible" :draggable="marker.draggable"></el-amap-marker>
         </el-amap>
     </div>
 </template>
@@ -23,7 +23,8 @@ export default {
             zoom: 15,
             newPosition: [],
             index: 0,
-            dataNum:0
+            dataNum: 0,
+
         };
     },
     created() {
@@ -37,21 +38,31 @@ export default {
         const speed = 0.000001;
         let time = setInterval(() => {
             this.index++;
-            
+
             this.getData(this.index);
             // console.log(this.index);
             // let t = setInterval(() => {
-                // console.log(this.markers[0].position[0])
-                // this.markers[0].position = [this.markers[0].position[0] + speed,this.markers[0].position[1] + speed];
-                // if (this.markers[0].position[0] >= this.newPosition[0]) {
-                //     clearInterval(t);
-                // }
-                // console.log(this.markers[0].position);
+            // console.log(this.markers[0].position[0])
+            // this.markers[0].position = [this.markers[0].position[0] + speed,this.markers[0].position[1] + speed];
+            // if (this.markers[0].position[0] >= this.newPosition[0]) {
+            //     clearInterval(t);
+            // }
+            // console.log(this.markers[0].position);
             // }, 20)
+
+            this.angle = this.calAngle(this.markers[0].position, this.newPosition);
+
+            // this.markers[0].position = this.newPosition;
+
+            // this.markers[0].moveTo(this.newPosition,speed);
+
             
-            this.angle = this.calAngle(this.markers[0].position,this.newPosition);
-            this.markers[0].position = this.newPosition;
-            if(this.index>=this.dataNum){
+
+            let t = setInterval(()=>{
+
+            })
+
+            if (this.index >= this.dataNum) {
                 clearInterval(time);
             }
         }, 2000);
@@ -60,7 +71,20 @@ export default {
         // 姑且N为1
         this.markers = [
             {
-                position: []
+                position: [],
+                events: {
+                    'moveend': () => {
+                        console.log(11111)
+                    },
+                    'zoomchange': () => {
+                    },
+                    'click': (e) => {
+                        alert('map clicked');
+                    },
+                    'moveTo':(lnglat,speed)=>{
+                        console.log("aaaa");
+                    }
+                },
             }
         ];
 
@@ -78,7 +102,7 @@ export default {
         getData(index) {
             this.$http.get('http://localhost:8080/static/data.json').then(res => {
                 let result = res.data;
-                
+
                 this.newPosition = [result[index].longitude, result[index].latitude];
                 // console.log(result[index].longitude);
             })
